@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=test123
+      - MYSQL_DATABASE=test_db
+    volumes:
+      - mysql_db:/var/lib/mysql
+    
+
+  app:
+    build: .
+    ports:
+      - "5000:5000"  # Expose Flask app on port 5000
+    depends_on:
+      - mysql
+    environment:
+      MYSQL_HOST: mysql  # Connect to MySQL service using its container name
+      MYSQL_USER: root    # Use the MySQL root user for simplicity (consider a dedicated user)
+      MYSQL_PASSWORD: test123  # Use the same password set in the MySQL service
+      MYSQL_DATABASE: test_db  # Use the same database name
+
+volumes:
+  mysql_db:  # Persistent volume for MySQL data
